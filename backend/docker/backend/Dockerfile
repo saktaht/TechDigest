@@ -1,15 +1,14 @@
-# --- build stage ---
+# --- ビルドステージ ---
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-# 依存を入れる
 COPY backend/package*.json ./
 COPY backend/tsconfig.json ./
 COPY backend/src ./src
 RUN npm install
 RUN npm run build
 
-# --- runtime stage ---
+# --- ランタイムステージ(動かすだけだから、dev系は不要でビルドしたものを使う) ---
 FROM node:20-alpine
 WORKDIR /app
 
