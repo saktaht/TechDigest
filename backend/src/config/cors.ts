@@ -6,6 +6,7 @@ const ROOT = process.env.ROOT || 'http://localhost:3000';
 
 const allowedOriginsDevelopment: string[] = [
   ROOT,
+  'http://localhost:3001',
   'http://127.0.0.1:3000',
 ].concat(allowedOriginsProduction);
 
