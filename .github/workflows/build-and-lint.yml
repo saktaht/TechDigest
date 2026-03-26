@@ -4,6 +4,7 @@ on:
     branches: [main, dev]
   pull_request:
     branches: [main, dev]
+  workflow_dispatch:
 
 jobs:
   frontend:
@@ -57,6 +58,6 @@ jobs:
 
       - name: Lint
         run: npm run lint
-        
+
       - name: Build
         run: npm run build
