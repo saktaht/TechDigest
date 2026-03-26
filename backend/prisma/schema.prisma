@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userTags UserTag[]
+  mailLogs MailLog[]
+}
+
+model Tag {
+  id String @id @default(uuid())
+  name String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userTags    UserTag[]
+  articleTags ArticleTag[]
+}
+
+// user-tagを繋ぐ中間テーブル
+model UserTag {
+  userId    String
+  tagId     String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([userId, tagId])
+}
+
+enum ArticleSource {
+  ZENN
+  QIITA
+}
+
+model Article {
+  id        String   @id @default(uuid())
+  title     String
+  url   String @unique 
+  source ArticleSource 
+  publishedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  articleTags ArticleTag[]
+}
+
+// article-tagを繋ぐ中間テーブル
+model ArticleTag {
+  articleId String
+  tagId String
+  createdAt DateTime @default(now())
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, tagId])
+}
+
+model MailLog {
+  id String @id @default(uuid())
+  userId String 
+  sentAt DateTime
+  success Boolean
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
