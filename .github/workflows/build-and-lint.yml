@@ -31,7 +31,7 @@ jobs:
         run: npm run -w front build
 
       - name: Generate Prisma Client
-        run: npm run -w backend prisma generate
+        run: npm run -w backend generate
 
       - name: Backend Lint
         run: npm run -w backend lint
