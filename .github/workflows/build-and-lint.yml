@@ -4,59 +4,39 @@ on:
     branches: [main, dev]
   pull_request:
     branches: [main, dev]
+  workflow_dispatch:
 
 jobs:
-  frontend:
-    name: Frontend Lint and Build
+  install-and-check:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: front
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: front/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm i
+        run: npm ci
 
-      - name: Lint
-        run: npm run lint
+      - name: Frontend Lint
+        run: npm run -w front lint
 
-      - name: build
-        run: npm run build
-
-  backend:
-    name: Backend Lint and Build
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: backend/package-lock.json
-
-      - name: Install dependencies
-        run: npm i
+      - name: Frontend Build
+        run: npm run -w front build
 
       - name: Generate Prisma Client
-        run: npx prisma generate
+        run: npm run -w backend generate
+        env:
+          DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
 
-      - name: Lint
-        run: npm run lint
-        
-      - name: Build
-        run: npm run build
+      - name: Backend Lint
+        run: npm run -w backend lint
+
+      - name: Backend Build
+        run: npm run -w backend build
