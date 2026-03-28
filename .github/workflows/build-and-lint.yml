@@ -32,6 +32,8 @@ jobs:
 
       - name: Generate Prisma Client
         run: npm run -w backend generate
+        env:
+          DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
 
       - name: Backend Lint
         run: npm run -w backend lint
