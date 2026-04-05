@@ -4,11 +4,23 @@ services:
     build:
       context: .
       dockerfile: backend/docker/backend/Dockerfile
+      target: dev
     ports:
       - "4000:4000"
+      - "5555:5555"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     env_file: ./backend/.env
+    environment:
+      NODE_ENV: development
+      PORT: 4000
+      DATABASE_URL: postgres://postgres:pass@db:5432/fetch-techer
+    # backendをbindマウントしたあとにnode_moduleがbindマウントされないように、node_modulesはvolumeを使用
+    volumes:
+      - ./backend:/app
+      - backend-node-modules:/app/node_modules
+    command: sh -c "npm run generate && npm run dev"
 
   db:
     container_name: db
@@ -22,7 +34,13 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
-      - "${DB_PORT}:5432"   
+      - "${DB_PORT}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
+  backend-node-modules:
   db-data:
