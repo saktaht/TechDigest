@@ -24,3 +24,13 @@ export const createNewTag: RequestHandler = async (req, res) => {
     res.status(500).json({ message: "エラーが発生しました。" });
   }
 }
+
+export const getTags: RequestHandler = async (req, res) => {
+  try {
+    const tags = await tagService.getTags();
+    res.json(tags);
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({ message: "エラーが発生しました。" });
+  }
+}

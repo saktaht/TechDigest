@@ -12,3 +12,15 @@ export const postTag = async (names: string[]) => {
     skipDuplicates: true,
   });
 };
+
+export const getTags = async () => {
+  return await prisma.tag.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+    orderBy: {
+      name: 'asc',
+    },
+  });
+};

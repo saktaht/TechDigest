@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { createNewTag } from '../controller/tagController';
+import { createNewTag, getTags } from '../controller/tagController';
 
 export const tagRoutes = () => {
   const router = Router();
-  router.post('/create', createNewTag);
+  router.post('/', createNewTag);
+  router.get('/', getTags);
+
   return router;
 };
