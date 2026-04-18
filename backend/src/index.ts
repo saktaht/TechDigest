@@ -1,20 +1,23 @@
 import express from 'express';
 import cors from 'cors';
 import { corsMiddleware } from './config/cors';
-import { initDb, pool } from './utils/db';
+import prisma, { initDb } from './utils/db';
+import routes from './router';
 
-const app = express();
+const server = express();
 const port = process.env.PORT || 4000;
 
-app.use(cors(corsMiddleware));
-app.use(express.json());
+server.use(cors(corsMiddleware));
+server.use(express.json());
 
-app.get('/health', async (_req, res) => {
-  const { rows } = await pool.query('SELECT 1 as ok');
-  res.json({ ok: true, db: rows[0].ok === 1 });
+server.get('/health', async (_req, res) => {
+  const rows = await prisma.$queryRaw<Array<{ ok: number }>>`SELECT 1 as ok`;
+  res.json({ ok: true, db: rows[0]?.ok === 1 });
 });
 
-app.listen(port, async () => {
+server.listen(port, async () => {
   await initDb();
   console.log(`API server on http://localhost:${port}`);
 });
+
+routes(server);

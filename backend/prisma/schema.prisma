@@ -17,7 +17,7 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 
   userTags UserTag[]
   mailLogs MailLog[]
