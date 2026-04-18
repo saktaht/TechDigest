@@ -26,3 +26,22 @@ export const addUserTags = async (userId: string, tagIds: string[]) => {
     skipDuplicates: true,
   });
 };
+
+export const findUserTags = async (userId: string) => {
+  return await prisma.userTag.findMany({
+    where: { userId },
+    select: {
+      tag: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+    orderBy: {
+      tag: {
+        name: 'asc',
+      },
+    },
+  });
+};
