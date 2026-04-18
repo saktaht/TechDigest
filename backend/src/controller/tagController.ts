@@ -33,4 +33,4 @@ export const getTags: RequestHandler = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: "エラーが発生しました。" });
   }
-}
+};
